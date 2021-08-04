@@ -1,0 +1,39 @@
+server:
+  port: 8080
+
+spring:
+  jmx:
+    enabled: true
+  application:
+    name: consumer-menssage-rabbit-example
+  cloud.stream:
+    default:
+      consumer:
+        concurrency: 3
+        max-attempts: 1
+    bindings:
+      consumerMenssageChannel:
+        destination: x-producer-menssage-available
+        group: producer-menssage
+
+      consumerMenssageChannelDeadLetterChannel:
+        destination: x-producer-menssage-error
+        group: producer-menssage
+
+    rabbit:
+      default:
+        consumer:
+          auto-bind-dlq: true
+          dlq-ttl: 360000 #6minutos para cada retry
+          dlq-dead-letter-exchange:
+      bindings:
+        consumerMenssageChannel:
+          consumer:
+            dead-letter-queue-name: x-producer-menssage-retry
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 30000
+        readTimeout: 30000
+        loggerLevel: full

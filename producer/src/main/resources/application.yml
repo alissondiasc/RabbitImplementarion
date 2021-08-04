@@ -1,0 +1,32 @@
+server:
+  port: 8081
+
+spring:
+  jmx:
+    enabled: true
+  application:
+    name: producer-menssage-rabbit-example
+  cloud:
+    stream.bindings:
+      producerMenssage:
+        destination: x-producer-menssage-available
+        group: producer-menssage
+
+      rabbit:
+        default:
+          producer:
+            auto-bind-dlq: true
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 120000
+        readTimeout: 120000
+        loggerLevel: full
+
+scheduler:
+  thread-pool.size: 3
+  send-message:
+    isEnabled: true
+    interval.ms: 600000
